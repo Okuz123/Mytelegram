@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Wingo Advanced Predictor</title>
+  <style>
+    body {
+      background: #121212;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 30px;
+    }
+    input {
+      padding: 10px;
+      margin: 5px;
+      width: 50px;
+      font-size: 18px;
+    }
+    button {
+      padding: 10px 20px;
+      margin-top: 20px;
+      font-size: 18px;
+      background: #0088cc;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+      text-align: left;
+      display: inline-block;
+    }
+    h2 { margin-bottom: 5px; }
+  </style>
+</head>
+<body>
+  <h1>🔮 Wingo Advanced Predictor</h1>
+  <p>Enter 5 numbers (0–9):</p>
+  <div id="inputs">
+    <input type="number" min="0" max="9" id="num1">
+    <input type="number" min="0" max="9" id="num2">
+    <input type="number" min="0" max="9" id="num3">
+    <input type="number" min="0" max="9" id="num4">
+    <input type="number" min="0" max="9" id="num5">
+  </div>
+  <button onclick="predict()">Predict</button>
+
+  <div class="result" id="result"></div>
+
+  <script>
+    // ✅ 3K digits of Pi (just a small chunk here, you’d expand to 3k digits)
+    const piDigits = 
+      "3141592653589793238462643383279502884197169399375105820974944592" +
+      "3078164062862089986280348253421170679821480865132823066470938446" +
+      "0955058223172535940812848111745028410270193852110555964462294895" +
+      "4930381964428810975665933446128475648233786783165271201909145648" +
+      "5669234603486104543266482133936072602491412737245870066063155881" +
+      // Add more up to 3,000 digits...
+      "7488152092096282925409171536436789259036001133053054882046652138";
+
+    function bigSmallColor(n) {
+      let size = n <= 4 ? "Small" : "Big";
+      let color = n % 2 === 0 ? "♥️ Red" : "💚 Green";
+      return `${size} | ${color}`;
+    }
+
+    function predict() {
+      let nums = [];
+      for (let i = 1; i <= 5; i++) {
+        let val = parseInt(document.getElementById(`num${i}`).value);
+        if (isNaN(val) || val < 0 || val > 9) {
+          alert("Please enter valid numbers (0–9).");
+          return;
+        }
+        nums.push(val);
+      }
+
+      // 1️⃣ Basic Sum Mod 10
+      let sum = nums.reduce((a, b) => a + b, 0);
+      let resultBasic = sum % 10;
+
+      // 2️⃣ Matrix Method (simple fixed weights)
+      let weights = [2, 3, 5, 7, 11];
+      let matrixSum = nums.map((n, i) => n * weights[i]).reduce((a, b) => a + b, 0);
+      let resultMatrix = matrixSum % 10;
+
+      // 3️⃣ Pi Digits Method
+      let index = parseInt(nums.join(''));
+      while (index >= piDigits.length) {
+        index = Math.floor(index / 2); // ensure within length
+      }
+      let resultPi = parseInt(piDigits.charAt(index));
+
+      document.getElementById("result").innerHTML = `
+        <h2>🧮 Basic Method</h2>
+        Next: ${resultBasic} → ${bigSmallColor(resultBasic)}<br/>
+        <h2>🔗 Matrix Method</h2>
+        Next: ${resultMatrix} → ${bigSmallColor(resultMatrix)}<br/>
+        <h2>🧩 Pi Digits Method</h2>
+        Next: ${resultPi} → ${bigSmallColor(resultPi)}
+      `;
+    }
+  </script>
+</body>
+</html>
