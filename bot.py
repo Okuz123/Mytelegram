@@ -12,7 +12,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             InlineKeyboardButton(
                 "🌐 Open Predictor",
                 web_app=WebAppInfo(
-                    url="https://YOUR_USERNAME.github.io/wingo-telegram-bot/webapp/"
+                    url="https://github.com/Okuz123/Mytelegram"
                 )
             )
         ]
