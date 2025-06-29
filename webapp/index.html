@@ -51,15 +51,15 @@
   <div class="result" id="result"></div>
 
   <script>
-    // ✅ 3K digits of Pi (just a small chunk here, you’d expand to 3k digits)
+    // ✅ 3K Pi Digits — here is a short snippet, add full 3K if you want.
     const piDigits = 
       "3141592653589793238462643383279502884197169399375105820974944592" +
       "3078164062862089986280348253421170679821480865132823066470938446" +
       "0955058223172535940812848111745028410270193852110555964462294895" +
       "4930381964428810975665933446128475648233786783165271201909145648" +
       "5669234603486104543266482133936072602491412737245870066063155881" +
-      // Add more up to 3,000 digits...
       "7488152092096282925409171536436789259036001133053054882046652138";
+      // Expand to full 3K digits if needed!
 
     function bigSmallColor(n) {
       let size = n <= 4 ? "Small" : "Big";
@@ -90,7 +90,7 @@
       // 3️⃣ Pi Digits Method
       let index = parseInt(nums.join(''));
       while (index >= piDigits.length) {
-        index = Math.floor(index / 2); // ensure within length
+        index = Math.floor(index / 2);
       }
       let resultPi = parseInt(piDigits.charAt(index));
 
