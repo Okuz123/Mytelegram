@@ -2,106 +2,157 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Wingo Advanced Predictor</title>
+  <title>Wingo Big/Small Predictor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
-      background: #121212;
-      color: #fff;
-      font-family: Arial, sans-serif;
+      background: #0e0e0e;
+      color: #f5f5f5;
+      font-family: 'Roboto', sans-serif;
       text-align: center;
-      padding: 30px;
+      padding: 40px 20px;
     }
-    input {
-      padding: 10px;
-      margin: 5px;
-      width: 50px;
-      font-size: 18px;
+    h1 {
+      color: #00ffc8;
+      margin-bottom: 20px;
     }
-    button {
-      padding: 10px 20px;
-      margin-top: 20px;
-      font-size: 18px;
-      background: #0088cc;
-      color: #fff;
+    input, button {
+      padding: 12px;
+      margin: 6px;
+      font-size: 16px;
       border: none;
       border-radius: 8px;
+    }
+    input[type="number"] {
+      width: 50px;
+      text-align: center;
+      background: #1e1e1e;
+      color: #fff;
+    }
+    input[type="text"] {
+      background: #1e1e1e;
+      color: #fff;
+      width: 80%;
+    }
+    button {
+      background: #00ffc8;
+      color: #000;
       cursor: pointer;
     }
-    .result {
-      margin-top: 20px;
-      font-size: 18px;
-      text-align: left;
-      display: inline-block;
+    button:hover {
+      background: #00dab5;
     }
-    h2 { margin-bottom: 5px; }
+    #result {
+      font-size: 28px;
+      margin-top: 30px;
+      font-weight: bold;
+    }
+    #login, #predictor, #adminPanel {
+      max-width: 450px;
+      margin: 0 auto;
+      background: #1b1b1b;
+      border-radius: 12px;
+      padding: 30px 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.4);
+    }
+    .hidden {
+      display: none;
+    }
+    .admin {
+      margin-top: 40px;
+      border-top: 2px solid #444;
+      padding-top: 20px;
+    }
+    #loginMsg {
+      color: #ff4c4c;
+    }
+    .stat {
+      background: #2b2b2b;
+      margin: 10px auto;
+      padding: 12px;
+      border-radius: 8px;
+      width: 80%;
+    }
+    .inputs {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
   </style>
 </head>
 <body>
-  <h1>🔮 Wingo Advanced Predictor</h1>
-  <p>Enter 5 numbers (0–9):</p>
-  <div id="inputs">
-    <input type="number" min="0" max="9" id="num1">
-    <input type="number" min="0" max="9" id="num2">
-    <input type="number" min="0" max="9" id="num3">
-    <input type="number" min="0" max="9" id="num4">
-    <input type="number" min="0" max="9" id="num5">
-  </div>
-  <button onclick="predict()">Predict</button>
+  <h1>🔐 Wingo Predictor</h1>
 
-  <div class="result" id="result"></div>
+  <div id="login">
+    <input type="text" id="keyInput" placeholder="Enter your access key">
+    <button onclick="checkKey()">Login</button>
+    <p id="loginMsg"></p>
+  </div>
+
+  <div id="predictor" class="hidden">
+    <h2>Enter 7 Numbers (0–9)</h2>
+    <div id="inputs" class="inputs"></div>
+    <button onclick="predict()">Predict</button>
+    <div id="result"></div>
+  </div>
+
+  <div id="adminPanel" class="hidden admin">
+    <h2>👑 Admin Panel</h2>
+    <div class="stat">Total Users: 15</div>
+    <div class="stat">Active Sessions: 5</div>
+    <div class="stat">Valid Keys: 2</div>
+    <div class="stat">Last Prediction: BIG</div>
+    <button onclick="alert('Feature coming soon: Add/remove keys!')">Manage Keys</button>
+    <button onclick="alert('Feature coming soon: View prediction history!')">View History</button>
+  </div>
 
   <script>
-    // ✅ 3K Pi Digits — here is a short snippet, add full 3K if you want.
-    const piDigits = 
-      "3141592653589793238462643383279502884197169399375105820974944592" +
-      "3078164062862089986280348253421170679821480865132823066470938446" +
-      "0955058223172535940812848111745028410270193852110555964462294895" +
-      "4930381964428810975665933446128475648233786783165271201909145648" +
-      "5669234603486104543266482133936072602491412737245870066063155881" +
-      "7488152092096282925409171536436789259036001133053054882046652138";
-      // Expand to full 3K digits if needed!
+    const USER_KEY = "KHAND2025";
+    const ADMIN_KEY = "KEYADMIN";
+    const PI_DIGITS = "14159265358979323846264338327950288419716939937510"; // sample
 
-    function bigSmallColor(n) {
-      let size = n <= 4 ? "Small" : "Big";
-      let color = n % 2 === 0 ? "♥️ Red" : "💚 Green";
-      return `${size} | ${color}`;
+    function checkKey() {
+      const inputKey = document.getElementById("keyInput").value.trim();
+      if (inputKey === USER_KEY) {
+        document.getElementById("login").classList.add("hidden");
+        document.getElementById("predictor").classList.remove("hidden");
+      } else if (inputKey === ADMIN_KEY) {
+        document.getElementById("login").classList.add("hidden");
+        document.getElementById("adminPanel").classList.remove("hidden");
+      } else {
+        document.getElementById("loginMsg").innerText = "❌ Invalid key!";
+      }
+    }
+
+    // Create 7 input fields
+    const inputsDiv = document.getElementById("inputs");
+    for (let i = 0; i < 7; i++) {
+      const input = document.createElement("input");
+      input.type = "number";
+      input.min = "0";
+      input.max = "9";
+      input.id = "num" + i;
+      input.placeholder = (i + 1);
+      inputsDiv.appendChild(input);
     }
 
     function predict() {
-      let nums = [];
-      for (let i = 1; i <= 5; i++) {
-        let val = parseInt(document.getElementById(`num${i}`).value);
+      let sum = 0;
+      for (let i = 0; i < 7; i++) {
+        const val = parseInt(document.getElementById("num" + i).value);
         if (isNaN(val) || val < 0 || val > 9) {
           alert("Please enter valid numbers (0–9).");
           return;
         }
-        nums.push(val);
+        sum += val;
       }
 
-      // 1️⃣ Basic Sum Mod 10
-      let sum = nums.reduce((a, b) => a + b, 0);
-      let resultBasic = sum % 10;
+      // Simple matrix + pi tweak
+      let weight = parseInt(PI_DIGITS.charAt(sum % PI_DIGITS.length));
+      let final = (sum + weight) / 7;
 
-      // 2️⃣ Matrix Method (simple fixed weights)
-      let weights = [2, 3, 5, 7, 11];
-      let matrixSum = nums.map((n, i) => n * weights[i]).reduce((a, b) => a + b, 0);
-      let resultMatrix = matrixSum % 10;
-
-      // 3️⃣ Pi Digits Method
-      let index = parseInt(nums.join(''));
-      while (index >= piDigits.length) {
-        index = Math.floor(index / 2);
-      }
-      let resultPi = parseInt(piDigits.charAt(index));
-
-      document.getElementById("result").innerHTML = `
-        <h2>🧮 Basic Method</h2>
-        Next: ${resultBasic} → ${bigSmallColor(resultBasic)}<br/>
-        <h2>🔗 Matrix Method</h2>
-        Next: ${resultMatrix} → ${bigSmallColor(resultMatrix)}<br/>
-        <h2>🧩 Pi Digits Method</h2>
-        Next: ${resultPi} → ${bigSmallColor(resultPi)}
-      `;
+      const signal = final <= 4.5 ? "🚥 SMALL" : "🚥 BIG";
+      document.getElementById("result").innerText = `Prediction: ${signal}`;
     }
   </script>
 </body>
